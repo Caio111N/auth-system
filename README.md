@@ -157,11 +157,6 @@ npm test
 
 Os testes atuais cobrem o middleware de autenticação e configurações importantes do model de usuário.
 
-## Frontend
-
-![Preview do Auth System](docs/screenshots/auth-system-preview.png)
-
-> Placeholder: adicione uma captura de tela ou GIF em `docs/screenshots/auth-system-preview.png` para exibir a interface no GitHub.
 
 ## Rotas principais
 
