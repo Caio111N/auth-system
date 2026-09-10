@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Auth System — blueprint de segurança para autenticação moderna.">
+    <title>Auth System — Security Blueprint</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <nav class="nav shell">
+        <a class="brand" href="/"><span class="brand-mark">A</span><span>AUTH<span class="brand-muted">_SYSTEM</span></span></a>
+        <div class="nav-actions"><a class="text-link mono" href="#how">Como funciona</a><a class="button button-small button-ghost" href="/login.html">Acessar painel</a></div>
+    </nav>
+    <main>
+        <section class="hero shell">
+            <div class="hero-copy">
+                <p class="eyebrow">SECURITY BLUEPRINT / V1.0</p>
+                <h1>Autenticação<br><em>desenhada para confiança.</em></h1>
+                <p class="hero-description">Um sistema de identidade completo, com segurança visível em cada camada. Node.js, JWT, bcrypt e MongoDB trabalhando juntos em uma arquitetura clara.</p>
+                <div class="hero-actions"><a class="button button-primary" href="/register.html">Criar conta <span>→</span></a><a class="button button-ghost" href="#how">Ver como funciona</a></div>
+                <div class="trust-row"><span>JWT exp 15m</span><span>bcrypt cost 12</span><span>rate limit on</span></div>
+            </div>
+            <div class="jwt-panel">
+                <div class="panel-head"><span>AUTH / TOKEN_INSPECTOR</span><span class="status">● 200 OK</span></div>
+                <div class="jwt-body">
+                    <div class="jwt-line"><span class="jwt-key">header</span><span class="jwt-comment">// algoritmo</span></div>
+                    <div class="jwt-line indent"><span class="jwt-key green">"alg"</span><span class="jwt-value">"HS256"</span></div>
+                    <div class="jwt-line indent"><span class="jwt-key green">"typ"</span><span class="jwt-value">"JWT"</span></div>
+                    <div class="jwt-divider"></div>
+                    <div class="jwt-line"><span class="jwt-key">payload</span><span class="jwt-comment">// claims</span></div>
+                    <div class="jwt-line indent"><span class="jwt-key green">"sub"</span><span class="jwt-value dim">"user_7f31a2"</span></div>
+                    <div class="jwt-line indent"><span class="jwt-key green">"type"</span><span class="jwt-value">"access"</span></div>
+                    <div class="jwt-line indent"><span class="jwt-key green">"exp"</span><span class="jwt-value">1778439600</span></div>
+                    <div class="jwt-line indent"><span class="jwt-key green">"iss"</span><span class="jwt-value">"auth-system"</span></div>
+                    <div class="jwt-divider"></div>
+                    <div class="signature"><span class="jwt-key">signature</span> <strong>✓ verified</strong> · eyJhbGciOiJIUzI1NiIs...</div>
+                </div>
+            </div>
+        </section>
+        <section class="tech-strip shell"><span class="tech-label">STACK / SECURITY LAYER</span><div class="tech-list"><span><b>⬡</b>Node.js</span><span><b>◈</b>Express</span><span><b>◆</b>MongoDB</span><span><b>◉</b>JWT</span><span><b>✦</b>bcrypt</span></div></section>
+        <section id="how" class="how shell">
+            <div class="section-heading"><div><p class="eyebrow">ARCHITECTURE / 06 LAYERS</p><h2>Como funciona a<br><em>proteção por baixo.</em></h2></div><p>Decisões técnicas pequenas que formam uma experiência de autenticação confiável.</p></div>
+            <div class="security-grid">
+                <article class="security-card"><span class="card-number">01 / HASH</span><h3>Senhas protegidas</h3><p>bcrypt transforma cada senha em um hash irreversível antes de chegar ao banco.</p><span class="card-tag">bcrypt · cost 12</span></article>
+                <article class="security-card"><span class="card-number">02 / SESSION</span><h3>JWT curto</h3><p>Tokens de acesso com expiração de 15 minutos, issuer e audience validados.</p><span class="card-tag">HS256 · exp 15m</span></article>
+                <article class="security-card"><span class="card-number">03 / DEFENSE</span><h3>Rate limiting</h3><p>Tentativas de login e recuperação são limitadas para reduzir ataques automatizados.</p><span class="card-tag">429 · retry-after</span></article>
+                <article class="security-card"><span class="card-number">04 / PRIVACY</span><h3>Anti-enumeração</h3><p>Respostas neutras evitam revelar se um e-mail existe na base de usuários.</p><span class="card-tag">generic response</span></article>
+                <article class="security-card"><span class="card-number">05 / RECOVERY</span><h3>Reset opaco</h3><p>Tokens aleatórios são armazenados somente como hash e expiram após o uso.</p><span class="card-tag">sha-256 · one-time</span></article>
+                <article class="security-card"><span class="card-number">06 / QUALITY</span><h3>Testes automatizados</h3><p>O middleware e o model têm testes básicos para manter o contrato de segurança.</p><span class="card-tag">node:test · 3 passing</span></article>
+            </div>
+        </section>
+        <section class="about shell"><div><p class="eyebrow">ABOUT / THE PROJECT</p><h2>Segurança não precisa<br>ser uma <em>caixa preta.</em></h2></div><div class="about-copy"><p>Este projeto é uma demonstração visual e funcional de um sistema de autenticação Node.js + Express + MongoDB. O frontend expõe as decisões de engenharia sem sacrificar clareza: cada tela é uma extensão do contrato seguro da API.</p></div></section>
+        <section class="cta shell"><div><p class="eyebrow">READY / TRY IT</p><h2>Explore o fluxo completo.</h2></div><a class="button button-primary" href="/register.html">Criar primeira conta <span>→</span></a></section>
+    </main>
+    <footer class="shell footer"><a class="brand" href="/"><span class="brand-mark">A</span><span>AUTH<span class="brand-muted">_SYSTEM</span></span></a><span class="mono">build 2026.09 · local demo</span><a class="text-link mono" href="https://github.com/" target="_blank" rel="noreferrer">GitHub ↗</a></footer>
+</body>
+</html>
