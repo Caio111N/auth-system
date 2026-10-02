@@ -1,5 +1,73 @@
+<!--
+============================================================
+ARQUIVO: dashboard.html
+FUNÇÃO: Exibe o perfil e ações da sessão após validação de acesso no servidor.
+USADO POR: GET /dashboard.html; app.js carrega perfil e trata logout.
+============================================================
+-->
 <!doctype html>
 <html lang="pt-BR">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Dashboard — Auth System</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/styles.css"></head>
-<body class="dashboard-page"><nav class="nav shell"><a class="brand" href="/"><span class="brand-mark">A</span><span>Auth<span class="brand-muted">System</span></span></a><button class="button button-small button-ghost" data-logout>Sair da conta</button></nav><main class="dashboard shell"><p class="eyebrow"><span class="live-dot"></span> SESSÃO ATIVA</p><h1>Bem-vindo, <em data-user-name>você</em>.</h1><p class="dashboard-lead">Este é o seu espaço protegido. A autenticação funcionou e seus dados estão seguros.</p><div class="profile-grid"><div class="profile-card"><div class="large-avatar" data-user-initials>—</div><div><p class="eyebrow">PERFIL AUTENTICADO</p><h2 data-user-name>Carregando...</h2><p data-user-email>carregando...</p></div><span class="verified">✓ Verificado</span></div><div class="metric-card"><span class="metric-icon">◈</span><strong>JWT</strong><p>Token de acesso ativo com expiração automática.</p></div><div class="metric-card"><span class="metric-icon">✦</span><strong>Protegido</strong><p>Esta rota exige uma sessão válida para ser acessada.</p></div></div><div class="dashboard-note"><span>✦</span><div><strong>Uma base segura para crescer</strong><p>O backend usa Express, MongoDB, bcrypt e rate limiting para proteger cada etapa da sua conta.</p></div></div></main><script src="/app.js"></script></body>
+    <!-- METADADOS E RECURSOS: carrega estilos e fontes da interface. -->
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Dashboard — Auth System</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="/styles.css" />
+    </head>
+    <!-- DASHBOARD: dados do perfil são preenchidos após consulta autenticada. -->
+    <body class="dashboard-page">
+        <nav class="nav shell">
+            <a class="brand" href="/"
+                ><span class="brand-mark">A</span
+                ><span>Auth<span class="brand-muted">System</span></span></a
+            ><button class="button button-small button-ghost" data-logout>
+                Sair da conta
+            </button>
+        </nav>
+        <!-- CONTEÚDO PROTEGIDO: placeholders são substituídos pelo perfil da API. -->
+        <main class="dashboard shell">
+            <p class="eyebrow"><span class="live-dot"></span> SESSÃO ATIVA</p>
+            <h1>Bem-vindo, <em data-user-name>você</em>.</h1>
+            <p class="dashboard-lead">
+                Este é o seu espaço protegido. A autenticação funcionou e seus
+                dados estão seguros.
+            </p>
+            <div class="profile-grid">
+                <div class="profile-card">
+                    <div class="large-avatar" data-user-initials>—</div>
+                    <div>
+                        <p class="eyebrow">PERFIL AUTENTICADO</p>
+                        <h2 data-user-name>Carregando...</h2>
+                        <p data-user-email>carregando...</p>
+                    </div>
+                    <span class="verified">✓ Verificado</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-icon">◈</span><strong>JWT</strong>
+                    <p>Token de acesso ativo com expiração automática.</p>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-icon">✦</span><strong>Protegido</strong>
+                    <p>Esta rota exige uma sessão válida para ser acessada.</p>
+                </div>
+            </div>
+            <div class="dashboard-note">
+                <span>✦</span>
+                <div>
+                    <strong>Uma base segura para crescer</strong>
+                    <p>
+                        O backend usa Express, MongoDB, bcrypt e rate limiting
+                        para proteger cada etapa da sua conta.
+                    </p>
+                </div>
+            </div>
+        </main>
+        <!-- COMPORTAMENTO: consulta de perfil e logout em script externo. -->
+        <script src="/app.js"></script>
+    </body>
 </html>

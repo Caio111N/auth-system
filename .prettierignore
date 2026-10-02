@@ -1,0 +1,6 @@
+# Dependências, artefatos gerados e arquivos locais fora da formatação.
+node_modules/
+coverage/
+package-lock.json
+.env
+.env.*

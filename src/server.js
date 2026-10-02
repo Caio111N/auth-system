@@ -1,62 +1,93 @@
-require('dotenv').config();
-const express = require('express');
+/**
+ * ============================================================
+ * ARQUIVO: server.js
+ * FUNÇÃO: Conecta ao MongoDB, inicia HTTP e encerra os recursos ao receber sinal do sistema.
+ * USADO POR: scripts start/dev; testes importam app.js sem disparar este ciclo.
+ * ============================================================
+ */
+
+// ------------------------------------------------------------
+// IMPORTS: conexão Mongoose, configuração, app Express e logger
+// ------------------------------------------------------------
 const mongoose = require('mongoose');
-const path = require('path');
-const authRoutes = require('./routes/authRoutes');
+const config = require('./config');
+const app = require('./app');
+const logger = require('./utils/logger');
 
-if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
-    throw new Error('JWT_SECRET deve ter pelo menos 32 caracteres');
-}
-
-const app = express();
-const port = Number(process.env.PORT) || 3000;
-const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
-const isProduction = process.env.NODE_ENV === 'production';
-
-const hasValidMongoUri = typeof mongoUri === 'string'
-    && mongoUri.startsWith('mongodb')
-    && !mongoUri.includes('<usuario>')
-    && !mongoUri.includes('<senha>')
-    && !mongoUri.includes('<cluster>');
-
-console.log('Configuração carregada:', {
-    PORT: port,
-    MONGODB_URI: hasValidMongoUri ? 'configurada' : 'ausente ou inválida',
-    JWT_SECRET: process.env.JWT_SECRET ? 'configurado' : 'ausente',
-    RESET_PASSWORD_URL: process.env.RESET_PASSWORD_URL ? 'configurada' : 'padrão',
-});
-
-if (!hasValidMongoUri) {
-    console.error('Erro de configuração: defina MONGODB_URI com uma URI real do MongoDB Atlas no arquivo .env.');
-}
-
-// Middleware para interpretar JSON
-app.use(express.json({ limit: '10kb' }));
-app.use(express.static(path.join(__dirname, '..', 'public')));
-
-app.get('/health', (req, res) => {
-    const databaseReady = mongoose.connection.readyState === 1;
-    res.status(databaseReady ? 200 : 503).json({
-        status: databaseReady ? 'ok' : 'degraded',
-        database: databaseReady ? 'connected' : 'disconnected',
+// ------------------------------------------------------------
+// INICIALIZAÇÃO: inicia HTTP e conexão direta com o MongoDB configurado
+// ------------------------------------------------------------
+/**
+ * Iniciar servidor HTTP e tentar conectar ao MongoDB usando timeout limitado.
+ * Mantém o serviço disponível para health/503 mesmo enquanto o banco está fora.
+ * @returns {import('http').Server} Servidor HTTP ativo.
+ */
+const startServer = () => {
+    /**
+     * Registrar que o listener está pronto para receber requisições.
+     * @returns {void}
+     */
+    const server = app.listen(config.port, () => {
+        logger.info({ port: config.port }, 'Servidor HTTP iniciado.');
     });
-});
+    let isShuttingDown = false;
 
-// Rotas
-app.use('/api/auth', authRoutes);
+    mongoose
+        .connect(config.mongoUri, { serverSelectionTimeoutMS: 5000 })
+        /**
+         * Registrar sucesso sem imprimir a URI ou detalhes de autenticação.
+         * @returns {void}
+         */
+        .then(() => {
+            logger.info('Conexão com MongoDB estabelecida.');
+        })
+        /**
+         * Explicar verificações de conectividade sem incluir erro que possa conter URI.
+         * @returns {void}
+         */
+        .catch(() => {
+            if (!isShuttingDown) {
+                logger.error(
+                    'MongoDB inacessível. Verifique se o serviço está rodando, a URI e as credenciais; no Atlas, confira Network Access e IPs liberados.'
+                );
+            }
+        });
 
-app.listen(port, () => {
-    console.log(`Servidor rodando na porta ${port}`);
-});
+    /**
+     * Parar o listener e desconectar Mongoose ao receber sinal de encerramento.
+     * @param {'SIGINT'|'SIGTERM'} signal Sinal recebido do sistema.
+     * @returns {void}
+     */
+    const shutdown = (signal) => {
+        if (isShuttingDown) return;
+        isShuttingDown = true;
+        logger.info({ signal }, 'Encerramento gracioso iniciado.');
 
-// A conexão com o banco não impede o endpoint HTTP de subir.
-if (hasValidMongoUri) {
-   mongoose.connect(mongoUri)
-       .then(() => {
-           console.log('Conectado ao MongoDB');
-       })
-       .catch((err) => {
-           console.error('Erro ao conectar ao MongoDB:', err.message);
-           if (!isProduction) console.error(err.stack);
-       });
-}
+        server.close(async (error) => {
+            if (error) {
+                logger.error(
+                    'Não foi possível encerrar o servidor HTTP corretamente.'
+                );
+                process.exitCode = 1;
+            }
+
+            try {
+                await mongoose.disconnect();
+            } catch {
+                logger.error(
+                    'Não foi possível encerrar a conexão com o MongoDB corretamente.'
+                );
+                process.exitCode = 1;
+            }
+        });
+    };
+
+    // A execução de CLI instala handlers; importar o módulo em testes não os instala.
+    process.once('SIGINT', () => shutdown('SIGINT'));
+    process.once('SIGTERM', () => shutdown('SIGTERM'));
+    return server;
+};
+
+if (require.main === module) startServer();
+
+module.exports = { startServer };
